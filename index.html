@@ -3521,7 +3521,7 @@ const SHOP_LINE_URL = "https://lin.ee/7LiGqY4";
 const SHOP_SUBTITLE = "";
 const SHOP_HERO_NOTE = "เว็ปไซต์เช็คสินค้าพร้อมส่งของร้านเรา\nทำเพื่อลูกค้าให้หาสินค้าง่ายขึ้นนะคะ\nstatus: demo สถานะสินค้ายังไม่ real-time น้า";
 const TOP_PROMO_TEXT = "ลุกค้าเก่า/ใหม่ ทัก DM ทุกครั้งก่อน CF - > โปรค่าส่ง 19 บาท ⭐️ Flash sale ฉ่ำ ๆ !!";
-const LAST_UPDATED = "08/09/2026 13:41";
+const LAST_UPDATED = "08/09/2026 13:44";
 const SETTINGS_STORAGE_KEY = "mikomiko-store-settings-v2";
 const CART_STORAGE_KEY = "mikomiko-cart-v1";
 const SHIPPING_FEE = 39;
@@ -4094,6 +4094,7 @@ function normalizeStatusText(value) {
 
 function customCategoryParts(product) {
   return [
+    ...(Array.isArray(product.customCategories) ? product.customCategories : []),
     product.status3,
     product["สถานะ3"],
     product.customCategory,
