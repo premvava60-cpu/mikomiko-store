@@ -1885,6 +1885,16 @@
     pointer-events: none;
   }
 
+  .cat-walk-source {
+    position: fixed;
+    right: -2px;
+    bottom: -2px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .cat-walk-fixed {
       display: none;
@@ -3506,7 +3516,8 @@
   </section>
 </main>
 
-<video class="cat-walk-fixed" autoplay loop muted playsinline aria-hidden="true">
+<canvas class="cat-walk-fixed" id="catWalkCanvas" aria-hidden="true" hidden></canvas>
+<video class="cat-walk-fixed" id="catWalkVideo" autoplay loop muted playsinline preload="auto" aria-hidden="true">
   <source src="./cat_walk_mobile.webm" type="video/webm">
 </video>
 
@@ -3542,7 +3553,7 @@ const SHOP_LINE_URL = "https://lin.ee/7LiGqY4";
 const SHOP_SUBTITLE = "";
 const SHOP_HERO_NOTE = "เว็ปไซต์เช็คสินค้าพร้อมส่งของร้านเรา\nทำเพื่อลูกค้าให้หาสินค้าง่ายขึ้นนะคะ\nstatus: demo สถานะสินค้ายังไม่ real-time น้า";
 const TOP_PROMO_TEXT = "ลุกค้าเก่า/ใหม่ ทัก DM ทุกครั้งก่อน CF - > โปรค่าส่ง 19 บาท ⭐️ Flash sale ฉ่ำ ๆ !!";
-const LAST_UPDATED = "09/09/2026 11:46";
+const LAST_UPDATED = "09/09/2026 11:52";
 const SETTINGS_STORAGE_KEY = "mikomiko-store-settings-v2";
 const CART_STORAGE_KEY = "mikomiko-cart-v1";
 const SHIPPING_FEE = 39;
@@ -3675,6 +3686,8 @@ const els = {
   bannerStatus: document.getElementById("bannerStatus"),
   cuteBanner: document.getElementById("cuteBanner"),
   cuteBannerImage: document.getElementById("cuteBannerImage"),
+  catWalkVideo: document.getElementById("catWalkVideo"),
+  catWalkCanvas: document.getElementById("catWalkCanvas"),
   cartButton: document.getElementById("cartButton"),
   cartBadge: document.getElementById("cartBadge"),
   cartBackdrop: document.getElementById("cartBackdrop"),
@@ -4905,6 +4918,64 @@ function renderBanner() {
   if (bannerImage) els.cuteBannerImage.src = bannerImage;
 }
 
+function usesAppleMobileVideoFallback() {
+  const userAgent = navigator.userAgent || "";
+  return /iPhone|iPad|iPod/i.test(userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function enableCatWalkTransparencyFallback() {
+  const video = els.catWalkVideo;
+  const canvas = els.catWalkCanvas;
+  if (!video || !canvas || !usesAppleMobileVideoFallback()) return;
+  video.classList.replace("cat-walk-fixed", "cat-walk-source");
+
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  if (!context) return;
+  let running = false;
+  let lastFrameTime = 0;
+
+  const drawFrame = (time) => {
+    if (!running) return;
+    requestAnimationFrame(drawFrame);
+    if (time - lastFrameTime < 40 || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+    lastFrameTime = time;
+
+    const width = Math.min(video.videoWidth, 360);
+    const height = Math.round(width * video.videoHeight / video.videoWidth);
+    if (!width || !height) return;
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    try {
+      context.drawImage(video, 0, 0, width, height);
+      const image = context.getImageData(0, 0, width, height);
+      for (let index = 0; index < image.data.length; index += 4) {
+        if (image.data[index] < 12 && image.data[index + 1] < 12 && image.data[index + 2] < 12) {
+          image.data[index + 3] = 0;
+        }
+      }
+      context.putImageData(image, 0, 0);
+      canvas.hidden = false;
+    } catch (error) {
+      console.warn("ไม่สามารถทำพื้นหลังวิดีโอให้โปร่งใสได้", error);
+      running = false;
+      canvas.hidden = true;
+      video.classList.replace("cat-walk-source", "cat-walk-fixed");
+    }
+  };
+
+  const start = () => {
+    if (running) return;
+    running = true;
+    requestAnimationFrame(drawFrame);
+  };
+  video.addEventListener("playing", start);
+  if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && !video.paused) start();
+}
+
 function formatBytes(bytes) {
   if (!bytes) return "0 KB";
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
@@ -5155,6 +5226,7 @@ if (typeof ResizeObserver !== "undefined") {
 }
 updateStickyOffsets();
 
+enableCatWalkTransparencyFallback();
 render();
 </script>
 </body>
