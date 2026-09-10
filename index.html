@@ -1877,11 +1877,11 @@
   /* Decorative cat stays above the mobile safe area without blocking controls or taps. */
   .cat-walk-fixed {
     position: fixed;
-    bottom: calc(-2px + env(safe-area-inset-bottom));
+    bottom: calc(2px + env(safe-area-inset-bottom));
     left: max(12px, calc((100vw - 760px) / 2 + 12px));
     right: auto;
     z-index: 70;
-    width: clamp(54px, 15vw, 72px);
+    width: clamp(62px, 18vw, 82px);
     height: auto;
     pointer-events: none;
     transform: none;
@@ -1897,10 +1897,10 @@
   }
 
   .cat-walk-fixed.cat-walk-fixed--old-right {
-    bottom: calc(-16px + env(safe-area-inset-bottom));
-    left: auto;
-    right: max(-10px, calc((100vw - 760px) / 2 - 10px));
-    width: min(320px, 84vw);
+    bottom: calc(2px + env(safe-area-inset-bottom));
+    left: max(88px, calc((100vw - 760px) / 2 + 92px));
+    right: auto;
+    width: clamp(160px, 50vw, 190px);
     transform: none;
   }
 
@@ -1928,9 +1928,9 @@
 
   @media (max-width: 430px) {
     .cat-walk-fixed {
-      bottom: calc(-2px + env(safe-area-inset-bottom));
+      bottom: calc(2px + env(safe-area-inset-bottom));
       left: 12px;
-      width: clamp(52px, 16vw, 64px);
+      width: clamp(60px, 18vw, 72px);
     }
 
     .sticky-shell {
@@ -3531,9 +3531,8 @@
   </section>
 </main>
 
-<img class="cat-walk-fixed" data-mascot="meditating_tabby" src="./cat_meditation_locked_slow.gif" alt="" aria-hidden="true">
 <img class="cat-walk-fixed cat-walk-fixed--old-center" data-mascot="sleeping_white" src="./cat_sleep_natural_8bit_wide.png" alt="" aria-hidden="true">
-<img class="cat-walk-fixed cat-walk-fixed--old-right" data-mascot="walking_orange" src="./cat_walk_full_motion_clean_start.png" alt="" aria-hidden="true">
+<img class="cat-walk-fixed cat-walk-fixed--old-right" data-mascot="walking_orange" src="./cat_walk_fixed_loop.gif" alt="" aria-hidden="true">
 
 <nav class="scroll-jump-controls" aria-label="เลื่อนหน้าเว็บ">
   <a class="ig-chat-fab" href="https://www.instagram.com/mikomiko.th/" target="_blank" rel="noopener" title="แชทกับแม่ค้าทาง Instagram" aria-label="แชทกับแม่ค้าทาง Instagram">
@@ -3567,7 +3566,7 @@ const SHOP_LINE_URL = "https://lin.ee/7LiGqY4";
 const SHOP_SUBTITLE = "";
 const SHOP_HERO_NOTE = "เว็ปไซต์เช็คสินค้าพร้อมส่งของร้านเรา\nทำเพื่อลูกค้าให้หาสินค้าง่ายขึ้นนะคะ\nstatus: demo สถานะสินค้ายังไม่ real-time น้า";
 const TOP_PROMO_TEXT = "ลุกค้าเก่า/ใหม่ ทัก DM ทุกครั้งก่อน CF - > โปรค่าส่ง 19 บาท ⭐️ Flash sale ฉ่ำ ๆ !!";
-const LAST_UPDATED = "10/09/2026 10:10";
+const LAST_UPDATED = "10/09/2026 10:32";
 const SETTINGS_STORAGE_KEY = "mikomiko-store-settings-v2";
 const CART_STORAGE_KEY = "mikomiko-cart-v1";
 const SHIPPING_FEE = 39;
